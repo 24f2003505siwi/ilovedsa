@@ -1,32 +1,29 @@
 class Solution {
 public:
-    void dfs(int i, vector<vector<int>>& adj, vector<bool>& visited) {
-        visited[i] = true;
-        for (int neighbor : adj[i]) {
-            if (!visited[neighbor]) {
-                dfs(neighbor, adj, visited);
-            }
+    unordered_map<int, int> parent;
+    int find(int i){
+        if (parent.find(i) == parent.end()){
+            parent[i] = i;
+        }
+        if (parent[i] == i) return i;
+        return parent[i] = find(parent[i]);
+    }
+    void unionnodes(int i, int j){
+        int rooti = find(i);
+        int rootj = find(j);
+        if (rooti != rootj){
+            parent[rooti] = rootj;
         }
     }
     int removeStones(vector<vector<int>>& stones) {
-        int n = stones.size();
-        vector<vector<int>> adj(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++){
-                if (stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]){
-                    adj[i].push_back(j);
-                    adj[j].push_back(i);
-                }
-            }
+        parent.clear();
+        for (const auto& stone : stones){
+            unionnodes(stone[0], stone[1] + 10001);
         }
-        vector<bool> visited(n, false);
-        int components = 0;
-        for (int i = 0; i < stones.size(); i++) {
-            if (!visited[i]) {
-                components++;
-                dfs(i, adj, visited);
-            }
+        unordered_set<int> components;
+        for (const auto& stone : stones){
+            components.insert(find(stone[0]));
         }
-        return n - components;
+        return stones.size() - components.size();
     }
 };

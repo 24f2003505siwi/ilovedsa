@@ -1,0 +1,1 @@
+<h2>employees-whose-manager-left-the-company Notes</h2><hr>[ Time taken: 5m 42s ]
